@@ -1,2 +1,6 @@
 [prod-server]
 172.31.47.106
+[selenium-server]
+172.31.37.171
+[test-server]
+172.31.33.183
