@@ -1,0 +1,16 @@
+//PIPELINE SELENIUM NAME:INSUREME-SELENIUM
+node{
+    stage('code checkout')
+    {
+        git 'https://github.com/ashinv121/Insure-me.git'
+    }
+    
+    stage('test-server-deployment'){
+        
+        ansiblePlaybook become: true, credentialsId: 'ssh-key', disableHostKeyChecking: true, installation: 'ansible', inventory: 'hosts', playbook: 'test-server.yml'
+    }
+    stage('selenium-testing'){
+        
+        ansiblePlaybook become: true, credentialsId: 'ssh-key', disableHostKeyChecking: true, installation: 'ansible', inventory: 'hosts', playbook: 'selenium-server.yml'
+    }
+}
