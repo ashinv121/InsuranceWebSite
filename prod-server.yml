@@ -17,7 +17,7 @@
     become_user : root
 
   - name: Check if container exists
-    shell: sudo docker ps -f "name=banking-prod" -aq
+    shell: sudo docker ps -f "name=insure-prod" -aq
     register: container_ids
 
   - name: Stop and remove container if it exists
@@ -27,7 +27,7 @@
 
   - name: Deploy Docker Container
     become : yes
-    command: docker run -itd -p 8080:8080 --name banking-prod ashinv121/banking:1.0
+    command: docker run -itd -p 8080:8080 --name insure-prod ashinv121/insureapp:1.0
   
   - name: Check if node-exporter container exists
     shell: sudo docker ps -f "name=node-exporter" -aq
