@@ -1,0 +1,48 @@
+//PIPELINE NAME: INSUREME-CICD
+//this pipline call INSUREME-SELENIUM.
+node{
+    stage('code checkout'){
+        
+        git 'https://github.com/ashinv121/Insure-me.git'
+    }
+    stage('code comile'){
+   
+        sh 'mvn compile'
+    }
+    stage('code test'){
+   
+        sh 'mvn test'
+    }
+     stage('code package'){
+   
+        sh 'mvn clean package'
+    }
+    stage('package containeriztion'){
+        
+        sh 'docker build -t ashinv121/insureapp:1.0 .'
+    }
+    stage('push image to docker hub'){
+        
+    withCredentials([string(credentialsId: 'Dockerhubpassword', variable: 'Dockerhubpassword')]) {  
+        
+             sh "docker login -u ashinv121 -p ${Dockerhubpassword}"    
+        }
+        
+        sh 'docker push ashinv121/insureapp:1.0' 
+    }
+    stage('image remove from local'){
+        
+        sh 'docker rmi ashinv121/insureapp:1.0'
+    }
+    
+    stage('selenium test pipeline' )
+    {
+        build 'INSUREME-SELENIUM'
+    }
+    
+    stage('prodection-deployment'){
+        
+        ansiblePlaybook become: true, credentialsId: 'ssh-key', disableHostKeyChecking: true, installation: 'ansible', inventory: 'hosts', playbook: 'prod-server.yml'
+    }
+
+}
